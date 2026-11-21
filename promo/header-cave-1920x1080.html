@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    color: #f2e9d6;
+    position: relative;
+    background-color: #0b0d12;
+  }
+
+  /* background: the in game shot, pushed slightly so the loading corner falls out of frame */
+  .bg {
+    position: absolute; inset: 0;
+    background: url("bg-cave.png") no-repeat;
+    background-size: 116%;
+    background-position: 46% 42%;
+    filter: saturate(1.06) contrast(1.04) brightness(.92);
+  }
+
+  /* left scrim so type stays readable over the busy cave */
+  .scrim-l {
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg,
+      rgba(8,10,14,.95) 0%,
+      rgba(8,10,14,.86) 26%,
+      rgba(8,10,14,.55) 46%,
+      rgba(8,10,14,.12) 64%,
+      rgba(8,10,14,0) 78%);
+  }
+  /* bottom band hides the loading percent and grounds the frame */
+  .scrim-b {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 26%;
+    background: linear-gradient(0deg,
+      rgba(9,11,16,1) 0%,
+      rgba(9,11,16,.92) 22%,
+      rgba(9,11,16,.55) 52%,
+      rgba(9,11,16,0) 100%);
+  }
+  /* mild vignette */
+  .vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(120% 90% at 60% 45%, transparent 40%, rgba(5,6,9,.72) 100%);
+  }
+
+  .frame { position: absolute; inset: 40px; border: 1px solid rgba(200,168,107,.22); }
+  .frame::before, .frame::after { content: ""; position: absolute; width: 110px; height: 110px; border: 2px solid rgba(200,168,107,.5); }
+  .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .frame::after { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  .content { position: absolute; left: 132px; top: 214px; width: 900px; }
+
+  .kicker {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 19px; letter-spacing: 7px; text-transform: uppercase;
+    color: #c8a86b; margin-bottom: 26px;
+    text-shadow: 0 2px 10px rgba(0,0,0,.9);
+  }
+  .rule { width: 88px; height: 2px; background: #c8a86b; margin-bottom: 34px; }
+
+  h1 {
+    font-size: 118px; line-height: .95; letter-spacing: 9px;
+    font-weight: 400; text-transform: uppercase;
+    text-shadow: 0 6px 40px rgba(0,0,0,.9), 0 1px 2px rgba(0,0,0,.8);
+  }
+  h1 span { display: block; }
+  h1 .thin { font-size: 46px; letter-spacing: 20px; color: #d8c49a; margin-top: 20px; }
+
+  .tag {
+    margin-top: 36px; font-size: 33px; font-style: italic; color: #e2d8c2;
+    text-shadow: 0 2px 16px rgba(0,0,0,.95);
+  }
+
+  .chips {
+    margin-top: 62px; display: flex; gap: 40px;
+    font-family: "Segoe UI", Arial, sans-serif; font-size: 20px;
+    letter-spacing: 1.1px; color: #ddd3bd;
+    text-shadow: 0 2px 10px rgba(0,0,0,.95);
+  }
+  .chip { display: flex; align-items: center; gap: 12px; }
+  .dot { width: 8px; height: 8px; background: #c8a86b; transform: rotate(45deg); }
+
+  .footer {
+    position: absolute; left: 132px; bottom: 96px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 18px; letter-spacing: 4px; color: rgba(226,216,194,.6);
+  }
+  .footer b { color: #c8a86b; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="bg"></div>
+  <div class="scrim-l"></div>
+  <div class="scrim-b"></div>
+  <div class="vignette"></div>
+  <div class="frame"></div>
+
+  <div class="content">
+    <div class="kicker">Baldur's Gate 3 &middot; Cosmetic Mod</div>
+    <div class="rule"></div>
+    <h1>
+      <span>Reshape</span>
+      <span>Form</span>
+      <span class="thin">races &middot; body &middot; voice</span>
+    </h1>
+    <div class="tag">Look like anyone. Keep your race.</div>
+    <div class="chips">
+      <div class="chip"><div class="dot"></div>Vanilla character creation</div>
+      <div class="chip"><div class="dot"></div>Permanent</div>
+      <div class="chip"><div class="dot"></div>Traits untouched</div>
+    </div>
+  </div>
+
+  <div class="footer"><b>RACECOSMETIC</b> &nbsp;&middot;&nbsp; v1.0.0 &nbsp;&middot;&nbsp; Exty</div>
+</body>
+</html>

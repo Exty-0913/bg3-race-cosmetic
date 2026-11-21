@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    color: #f2e9d6;
+    position: relative;
+    background:
+      radial-gradient(900px 700px at 10% 22%, rgba(200,168,107,.10), transparent 62%),
+      linear-gradient(112deg, #0b0d12 0%, #12161e 54%, #0a0c11 100%);
+  }
+
+  /* the in game shot: full bleed, scaled so the character sits on the right third */
+  .shot {
+    position: absolute; inset: 0;
+    background: url("char.png") no-repeat;
+    background-size: 150%;
+    background-position: 12% 32%;
+    filter: saturate(1.05) contrast(1.03) brightness(.96);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.25) 20%, rgba(0,0,0,.75) 33%, #000 46%, #000 100%);
+            mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.25) 20%, rgba(0,0,0,.75) 33%, #000 46%, #000 100%);
+  }
+  .shot-tint {
+    position: absolute; inset: 0;
+    background:
+      linear-gradient(0deg, rgba(9,11,16,.92) 0%, rgba(9,11,16,.40) 14%, transparent 38%),
+      radial-gradient(120% 100% at 72% 42%, transparent 46%, rgba(6,7,10,.5) 100%);
+  }
+  .divider {
+    position: absolute; left: 872px; top: 96px; bottom: 96px; width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(200,168,107,.42) 24%, rgba(200,168,107,.42) 76%, transparent);
+  }
+
+  .content { position: absolute; left: 118px; top: 212px; width: 700px; }
+
+  .kicker {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 18px; letter-spacing: 6.5px; text-transform: uppercase;
+    color: #c8a86b; margin-bottom: 24px;
+  }
+  .rule { width: 80px; height: 2px; background: #c8a86b; margin-bottom: 32px; }
+
+  h1 {
+    font-size: 94px; line-height: .96; letter-spacing: 7px;
+    font-weight: 400; text-transform: uppercase;
+  }
+  h1 span { display: block; }
+  h1 .thin { font-size: 33px; letter-spacing: 13px; color: #d8c49a; margin-top: 20px; }
+
+  .tag { margin-top: 32px; font-size: 27px; font-style: italic; color: #e2d8c2; line-height: 1.35; }
+
+  .chips {
+    margin-top: 48px; display: flex; flex-direction: column; gap: 15px;
+    font-family: "Segoe UI", Arial, sans-serif; font-size: 18.5px;
+    letter-spacing: .8px; color: #ddd3bd;
+  }
+  .chip { display: flex; align-items: center; gap: 12px; }
+  .dot { width: 8px; height: 8px; background: #c8a86b; transform: rotate(45deg); flex: none; }
+
+  .footer {
+    position: absolute; left: 118px; bottom: 88px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 17px; letter-spacing: 3.5px; color: rgba(226,216,194,.55);
+  }
+  .footer b { color: #c8a86b; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="shot"></div>
+  <div class="shot-tint"></div>
+  <div class="divider"></div>
+
+  <div class="content">
+    <div class="kicker">Baldur's Gate 3 &middot; Cosmetic Mod</div>
+    <div class="rule"></div>
+    <h1>
+      <span>Reshape</span>
+      <span>Form</span>
+      <span class="thin">races &middot; body &middot; voice</span>
+    </h1>
+    <div class="tag">Look like anyone.<br>Keep your race.</div>
+    <div class="chips">
+      <div class="chip"><div class="dot"></div>Vanilla character creation</div>
+      <div class="chip"><div class="dot"></div>Permanent, no toggle to maintain</div>
+      <div class="chip"><div class="dot"></div>Traits, tags and class untouched</div>
+    </div>
+  </div>
+
+  <div class="footer"><b>RACECOSMETIC</b> &nbsp;&middot;&nbsp; v1.0.0 &nbsp;&middot;&nbsp; Exty</div>
+</body>
+</html>

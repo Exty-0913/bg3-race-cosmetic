@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<save>
+    <version major="4" minor="0" revision="9" build="322"/>
+    <region id="Rulebook">
+        <node id="root">
+            <children>
+                <!--
+                    RCVisualOnly: appearance + body type only.
+                    Traits-safe: tags, AI, spells and the Race component stay untouched.
+                -->
+                <node id="Rule">
+                    <attribute id="ApplyTagsFromTemplate" type="bool" value="false"/>
+                    <attribute id="ApplyVisual" type="bool" value="true"/>
+                    <attribute id="ApplyVisualInCC" type="bool" value="true"/>
+                    <attribute id="ChangeAi" type="bool" value="false"/>
+                    <attribute id="ChangeBodyType" type="bool" value="true"/>
+                    <attribute id="ChangeIcon" type="bool" value="false"/>
+                    <attribute id="ChangeRace" type="bool" value="false"/>
+                    <attribute id="DisableEquipmentSlots" type="bool" value="false"/>
+                    <attribute id="IgnoreCustomLooks" type="bool" value="false"/>
+                    <attribute id="KillEntityAtZeroHP" type="bool" value="false"/>
+                    <attribute id="MuteEquipmentSound" type="bool" value="false"/>
+                    <attribute id="RemoveOldTags" type="bool" value="false"/>
+                    <attribute id="RemovePrevSpells" type="bool" value="false"/>
+                    <attribute id="RetainDisplayName" type="bool" value="true"/>
+                    <attribute id="RuleName" type="LSString" value="RCVisualOnly"/>
+                    <attribute id="UnarmedAbilityFromTemplate" type="bool" value="false"/>
+                    <attribute id="UseShapeshiftIdentity" type="bool" value="false"/>
+                    <attribute id="UUID" type="guid" value="3b8e5c41-9f2d-4a71-b6c3-8d1e4f7a2c95"/>
+                    <children>
+                        <node id="Weight">
+                            <attribute id="type" type="uint8" value="4"/>
+                        </node>
+                    </children>
+                </node>
+                <!--
+                    RCVisualFull: same as above but also swaps the Race component.
+                    Use only if RCVisualOnly does not look close enough. This variant may
+                    also change race driven values (e.g. movement speed).
+                -->
+                <node id="Rule">
+                    <attribute id="ApplyTagsFromTemplate" type="bool" value="false"/>
+                    <attribute id="ApplyVisual" type="bool" value="true"/>
+                    <attribute id="ApplyVisualInCC" type="bool" value="true"/>
+                    <attribute id="ChangeAi" type="bool" value="false"/>
+                    <attribute id="ChangeBodyType" type="bool" value="true"/>
+                    <attribute id="ChangeIcon" type="bool" value="false"/>
+                    <attribute id="ChangeRace" type="bool" value="true"/>
+                    <attribute id="DisableEquipmentSlots" type="bool" value="false"/>
+                    <attribute id="IgnoreCustomLooks" type="bool" value="false"/>
+                    <attribute id="KillEntityAtZeroHP" type="bool" value="false"/>
+                    <attribute id="MuteEquipmentSound" type="bool" value="false"/>
+                    <attribute id="RemoveOldTags" type="bool" value="false"/>
+                    <attribute id="RemovePrevSpells" type="bool" value="false"/>
+                    <attribute id="RetainDisplayName" type="bool" value="true"/>
+                    <attribute id="RuleName" type="LSString" value="RCVisualFull"/>
+                    <attribute id="UnarmedAbilityFromTemplate" type="bool" value="false"/>
+                    <attribute id="UseShapeshiftIdentity" type="bool" value="false"/>
+                    <attribute id="UUID" type="guid" value="c1a7f2d9-6b34-4e05-9d8a-3f2b7c51e694"/>
+                    <children>
+                        <node id="Weight">
+                            <attribute id="type" type="uint8" value="4"/>
+                        </node>
+                    </children>
+                </node>
+            </children>
+        </node>
+    </region>
+</save>

@@ -1,0 +1,63 @@
+[size=6][b]RaceCosmetic - Reshape Form[/b][/size]
+[size=3][i]Permanent appearance change with the vanilla character creation screen. Your race mechanics stay yours.[/i][/size]
+
+[size=5][b]Description[/b][/size]
+RaceCosmetic adds a single spell, [b]Reshape Form[/b], to your main character's spellbook. Casting it opens the [b]vanilla character creation screen[/b]: choose the look of any vanilla race, sculpt the face, hair, skin, tattoos, horns and tail, and pick a voice.
+
+When you confirm, that look is written onto your character [b]permanently[/b]. There is no transform to keep active and no toggle to maintain. Your race name, racial tags, racial traits, class, subclass, ability scores, background, equipment and Dream Guardian are left untouched.
+
+The point of the mod: you can play a duergar for the traits and still look like a drow, or mix any other race's appearance with any other race's mechanics.
+
+Unlike most shapeshift mods, the result is also consistent in the [b]level up screen and the character sheet[/b], not just in the world - those screens rebuild the model from character data, and this mod writes that data properly.
+
+[size=5][b]Installation instructions[/b][/size]
+[list=1]
+[*]Install [b]BG3 Script Extender[/b] (Norbyte) if you have not already.
+[*]Copy [b]RaceCosmetic.pak[/b] into: [code]%LOCALAPPDATA%\Larian Studios\Baldur's Gate 3\Mods\[/code]
+[*]Enable [b]RaceCosmetic[/b] in BG3 Mod Manager and move it to the [b]bottom[/b] of the load order.
+[*]Load your save, open the spellbook (K) and find [b]Reshape Form[/b].
+[/list]
+
+[size=5][b]How to use[/b][/size]
+[list=1]
+[*]Make sure your party has a [b]free slot[/b] (max 4 members) - the mod briefly adds a temporary character.
+[*]Cast [b]Reshape Form[/b] outside combat.
+[*]Create the look you want and confirm.
+[*]Wait 2-3 seconds: the temporary character is removed and control returns to you.
+[/list]
+To change your look again later, just cast the spell again.
+
+[size=5][b]Main features[/b][/size]
+[list]
+[*][b]Vanilla UI[/b]: uses the game's own character creation screen, no custom interface.
+[*][b]Permanent[/b]: the appearance becomes part of your character data, so it survives saving, loading, long rests and respecs.
+[*][b]Consistent everywhere[/b]: world model, level up screen and character sheet all show the same character.
+[*][b]Mechanics preserved[/b]: race name, tags, racial traits, class, subclass, ability scores, background and Dream Guardian.
+[*][b]Voice included[/b]: body type and voice are part of the swap.
+[*][b]Any vanilla race[/b], including cross-body-type combinations.
+[*][b]Bilingual[/b]: English and Simplified Chinese.
+[*][b]Lightweight[/b]: no ImpUI, no MCM, no third-party assets.
+[/list]
+
+[size=5][b]Requirements[/b][/size]
+[list]
+[*][b]BG3 Script Extender[/b] - required.
+[*]Baldur's Gate 3 - tested on patch 8.
+[*]Single player, main character only.
+[/list]
+
+[size=5][b]Known limitations[/b][/size]
+[list]
+[*][b]Free party slot required.[/b] If the party is full the reshape is cancelled (the log says so).
+[*][b]Portraits do not refresh automatically.[/b] Use the magic mirror or reload the save.
+[*][b]The game logs a "dream visitor died" combat log line[/b] while the temporary character is cleaned up. It is engine-side and cannot be suppressed (Appearance Edit Enhanced shows the same). Harmless.
+[*][b]No revert spell by design.[/b] The change is permanent - reshape again to pick a new look.
+[*][b]Do not use it together with Appearance Edit Enhanced's mirror entry.[/b] Both open character creation; pick one.
+[/list]
+
+[size=5][b]Shout outs[/b][/size]
+The approach is inspired by [b]Appearance Edit Enhanced[/b] by [b]Eralyne[/b] ([url=https://www.nexusmods.com/baldursgate3/mods/899]link[/url]) - specifically how the game caches the applied look in AppearanceOverride, and how template fields such as EquipmentRace pick armour variants.
+
+This is an independent implementation: the code was written with AI coding assistance and guided and tested in game by the author. No Lua code, data tables or art assets from AAE are reused, and the package contains no third-party assets.
+
+Thank you Eralyne for the original work and for the documentation that made this possible.

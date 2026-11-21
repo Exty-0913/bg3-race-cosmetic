@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; }
+  body {
+    background:
+      radial-gradient(1200px 700px at 22% 30%, rgba(200,168,107,.10), transparent 62%),
+      radial-gradient(900px 600px at 82% 78%, rgba(90,120,130,.12), transparent 60%),
+      linear-gradient(160deg, #10131a 0%, #171b23 45%, #0d1015 100%);
+    font-family: "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    color: #f0e6d2;
+    position: relative;
+  }
+  .frame {
+    position: absolute; inset: 46px;
+    border: 1px solid rgba(200,168,107,.28);
+  }
+  .frame::before, .frame::after {
+    content: ""; position: absolute; width: 120px; height: 120px;
+    border: 2px solid rgba(200,168,107,.55);
+  }
+  .frame::before { top: -1px; left: -1px; border-right: none; border-bottom: none; }
+  .frame::after  { bottom: -1px; right: -1px; border-left: none; border-top: none; }
+
+  .content { position: absolute; left: 150px; top: 250px; width: 1180px; }
+
+  .kicker {
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 20px; letter-spacing: 7px; text-transform: uppercase;
+    color: #c8a86b; margin-bottom: 30px;
+  }
+  .rule { width: 96px; height: 2px; background: #c8a86b; margin-bottom: 38px; }
+
+  h1 {
+    font-size: 128px; line-height: .96; letter-spacing: 10px;
+    font-weight: 400; text-transform: uppercase;
+    text-shadow: 0 4px 34px rgba(0,0,0,.75);
+  }
+  h1 span { display: block; }
+  h1 .thin { font-size: 54px; letter-spacing: 22px; color: #c8a86b; margin-top: 18px; }
+
+  .tag {
+    margin-top: 42px; font-size: 36px; font-style: italic; color: #cfc6b4;
+  }
+
+  .chips {
+    margin-top: 74px; display: flex; gap: 46px;
+    font-family: "Segoe UI", Arial, sans-serif; font-size: 21px;
+    letter-spacing: 1.2px; color: #d8cfbb;
+  }
+  .chip { display: flex; align-items: center; gap: 14px; }
+  .dot { width: 9px; height: 9px; background: #c8a86b; transform: rotate(45deg); }
+
+  .footer {
+    position: absolute; right: 150px; bottom: 118px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 19px; letter-spacing: 3px; color: rgba(216,207,187,.62);
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+  <div class="frame"></div>
+
+  <div class="content">
+    <div class="kicker">Baldur's Gate 3 &middot; Cosmetic Mod</div>
+    <div class="rule"></div>
+
+    <h1>
+      <span>Reshape</span>
+      <span>Form</span>
+      <span class="thin">races &middot; body &middot; voice</span>
+    </h1>
+
+    <div class="tag">Look like anyone. Keep your race.</div>
+
+    <div class="chips">
+      <div class="chip"><div class="dot"></div>Vanilla character creation</div>
+      <div class="chip"><div class="dot"></div>Permanent</div>
+      <div class="chip"><div class="dot"></div>Traits untouched</div>
+    </div>
+  </div>
+
+  <div class="footer">v1.0.0 &nbsp;&middot;&nbsp; Exty</div>
+</body>
+</html>

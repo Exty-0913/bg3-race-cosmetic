@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<save>
+  <version major="4" minor="7" revision="1" build="3" />
+  <region id="Config">
+    <node id="root">
+      <children>
+        <node id="Conflicts" />
+        <node id="Dependencies">
+          <children />
+        </node>
+        <node id="ModuleInfo">
+          <attribute id="Author" type="LSWString" value="Exty" />
+          <attribute id="CharacterCreationLevelName" type="FixedString" value="" />
+          <attribute id="Description" type="LSWString" value="Cosmetic race reshuffle: change your appearance to any vanilla race in the character creation screen without altering racial traits, tags, class or the Dream Guardian." />
+          <attribute id="Folder" type="LSWString" value="RaceCosmetic" />
+          <attribute id="GMTemplate" type="FixedString" value="" />
+          <attribute id="LobbyLevelName" type="FixedString" value="" />
+          <attribute id="MD5" type="LSString" value="" />
+          <attribute id="MainMenuBackgroundVideo" type="FixedString" value="" />
+          <attribute id="MenuLevelName" type="FixedString" value="" />
+          <attribute id="Name" type="FixedString" value="RaceCosmetic" />
+          <attribute id="NumPlayers" type="uint8" value="4" />
+          <attribute id="PhotoBooth" type="FixedString" value="" />
+          <attribute id="StartupLevelName" type="FixedString" value="" />
+          <attribute id="Tags" type="LSWString" value="Customization;Utility" />
+          <attribute id="Type" type="FixedString" value="Add-on" />
+          <attribute id="UUID" type="FixedString" value="7f3c9a12-4d2b-4e8f-9c61-2a5b8e7d4c10" />
+          <attribute id="Version64" type="int64" value="281474976710656" />
+          <children>
+            <node id="PublishVersion">
+              <attribute id="Version64" type="int64" value="281474976710656" />
+            </node>
+            <node id="Scripts" />
+            <node id="TargetModes">
+              <children>
+                <node id="Target">
+                  <attribute id="Object" type="FixedString" value="Story" />
+                </node>
+              </children>
+            </node>
+          </children>
+        </node>
+      </children>
+    </node>
+  </region>
+</save>
