@@ -6,6 +6,27 @@ Baldur's Gate 3 data version referenced: patch 8.
 
 ---
 
+## [1.1.1] — 2026-11-22
+
+### Changed
+
+- `AnimationSetResourceID` is now written together with the visual template, so the idle animation
+  follows a cross-body-type swap.
+- The per-character race diagnostic is behind a `DEBUG_RACE_STATE` switch, off by default, so the log
+  stays readable.
+
+### Documented
+
+- Known limitation: after a **cross-height** reshape (e.g. duergar to drow) the level up screen keeps
+  zooming at the original height, so the closest shot frames the chest instead of the head. Verified
+  as *not* caused by the `Race` component, `EquipmentRace`, `VisualTemplate`,
+  `CharacterVisualResourceID` or `AnimationSetResourceID`; the character template has no
+  `CameraOffset` field. The focus follows the race stored in the creation data, which has to stay
+  untouched for respec to keep the original traits - a deliberate trade-off. Every other screen
+  follows the new body.
+
+---
+
 ## [1.1.0] — 2026-11-22
 
 ### Added

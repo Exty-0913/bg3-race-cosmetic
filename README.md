@@ -4,9 +4,9 @@
 
 ![RaceCosmetic](promo/cover-char-1920x1080.png)
 
-**v1.1.0** · Author: **Exty** · Requires [BG3 Script Extender](https://github.com/Norbyte/bg3se)
+**v1.1.1** · Author: **Exty** · Requires [BG3 Script Extender](https://github.com/Norbyte/bg3se)
 
-📦 **Download:** see [Releases](../../releases)
+📦 **Download:** see [Releases](../../releases) · 📝 **Changelog:** [CHANGELOG.md](CHANGELOG.md)
 
 ---
 
@@ -42,7 +42,7 @@ So you can play a duergar for the traits and look like a drow, with or without t
 | **Vanilla UI** | Uses the game's own character creation screen — no custom interface |
 | **Two variants** | Look only, or look + race name + tags |
 | **Permanent** | Written into character data; survives saves, loads, long rests and respecs |
-| **Consistent** | World model, **level up screen** and character sheet all agree |
+| **Consistent** | World model, **level up screen** and character sheet all agree, including armour fit |
 | **Mechanics preserved** | Racial traits, class, ability scores and background always stay yours |
 | **Respec safe** | Withers' respec still grants your original race's traits, never the borrowed race's |
 | **Voice included** | Body type and voice are part of the swap |
@@ -106,11 +106,10 @@ them together and **aborts the whole write** if `AppearanceOverride` cannot be c
 half-applied write is worse than none.
 
 `src/…/RaceData.lua` holds a race-parent table generated from the game's own `Races.lsx`; it is used
-to repair characters that were converted by builds before 1.0.1. Regenerate it with
-`tools/gen-race-data.py`.
+to repair characters converted by builds before 1.0.1. Regenerate it with `tools/gen-race-data.py`.
 
 The race each character had before its first reshape is recorded in `RaceCosmetic_origin.txt`, so
-respec repair never depends on a value that a later reshape may have changed.
+respec repair never depends on a value a later reshape may have changed.
 
 ---
 
@@ -121,6 +120,14 @@ respec repair never depends on a value that a later reshape may have changed.
 - **Portraits do not refresh automatically.** Use the magic mirror or reload the save.
 - **The game logs a "dream visitor died" combat log line** while the temporary character is cleaned
   up. Engine-side, cannot be suppressed (Appearance Edit Enhanced shows the same). Harmless.
+- **Cross-height swaps keep the old zoom focus in the level up screen.** After a short-to-tall
+  reshape (e.g. duergar to drow) zooming in focuses at the old height, so the closest shot frames the
+  chest instead of the head. The focus follows the race stored in the creation data, which is exactly
+  the field that must stay untouched for respec to keep the original traits - so this is a deliberate
+  trade-off. Everything else (world model, character sheet, armour fit, portraits) follows the new
+  body. Writing the `Race` component, `EquipmentRace`, `VisualTemplate`, `CharacterVisualResourceID`
+  or `AnimationSetResourceID` does not change it; there is no `CameraOffset` field on the character
+  template.
 - **No revert spell by design.** The change is permanent — reshape again to pick a new look.
 - **Do not use it together with Appearance Edit Enhanced's mirror entry.** Both open character
   creation; pick one.
@@ -134,8 +141,35 @@ respec hand out the borrowed race's traits (while the name and tags stayed origi
 by not writing those fields at all.
 
 Characters converted with an older build are repaired automatically when the save is loaded: the
-creation data is put back in sync with the recorded original race, and the **next** respec grants the
-correct traits again (already-granted traits are not revoked retroactively).
+creation data is put back in sync with the race the character was created with, and the **next**
+respec grants the correct traits again (already-granted traits are not revoked retroactively).
+
+How the original race is found: no build ever wrote the `Race` field on `ServerCharacter.Template`,
+so it still holds the race the character was created with. From 1.1.0 the value is also stored in
+`RaceCosmetic_origin.txt` the first time a character is reshaped, so later reshapes cannot confuse it.
+
+**Do not re-cast the spell before the repair has run** — on a save converted by an old build the
+character data already reports the borrowed race, so a reshape performed first would record that
+borrowed race as the "original" one.
+
+**Another leftover from older builds:** the level up page can wear the **original race's armour**
+while the head is the new one. Armour fit is chosen by `EquipmentRace` on `ServerCharacter.Template`,
+which holds a "race + gender" equipment entry (for example `Dwarf Male`) rather than a bare race
+guid. Earlier builds never wrote that field, so it still points at the race the character was created
+with, while the head comes from the appearance data.
+
+Repairing the creation data does not touch it — simply **cast the spell once more** with this
+version and the template fields are written too. The original race is already recorded by then, so
+respec stays correct.
+
+If the log says `cannot derive the original subrace from the template`, add one line to
+`RaceCosmetic_origin.txt`:
+
+```
+<character guid>|<original subrace guid>
+```
+
+then load the save again and respec once.
 
 ---
 

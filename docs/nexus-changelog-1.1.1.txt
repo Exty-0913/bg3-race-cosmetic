@@ -1,0 +1,90 @@
+=====================================================================
+NEXUS — 1.1.1 发布文案（三处，逐段复制）
+=====================================================================
+
+──────────────────────────────────────────────
+① Files -> Upload 时的 "Changelog" 栏（纯文本）
+──────────────────────────────────────────────
+
+1.1.1
+- CHANGED: the idle animation set (AnimationSetResourceID) is now written together with the visual template, so a cross-body-type swap keeps the new body's idle animation.
+- CHANGED: per-character race diagnostics are now behind a DEBUG_RACE_STATE switch, off by default, so the log stays readable.
+- DOCS: documented a known limitation - after a cross-height reshape (e.g. duergar to drow) the level up screen still zooms at the original height, so the closest shot frames the chest instead of the head.
+  Investigated and ruled out: Race component, EquipmentRace, VisualTemplate, CharacterVisualResourceID, AnimationSetResourceID. The character template has no CameraOffset field. The focus follows the race stored in the creation data, which must stay untouched so that respec keeps the original racial traits - a deliberate trade-off.
+- Everything else is unchanged since 1.1.0: two variants (Look only / Look and identity), respec safe, permanent conversion.
+
+
+──────────────────────────────────────────────
+② Description 页 -> "Changelogs" 区块（BBCode）
+──────────────────────────────────────────────
+
+[size=5][b]Changelog[/b][/size]
+
+[size=4][b]1.1.1[/b][/size] - 2026-11-22
+[list]
+[*][b]Changed:[/b] the idle animation set is now written together with the visual template, so a cross-body-type swap keeps the new body's idle animation.
+[*][b]Changed:[/b] per-character race diagnostics are behind a switch and off by default - cleaner log.
+[*][b]Documented:[/b] known limitation - after a cross-height reshape the level up screen still zooms at the original height (closest shot frames the chest). Ruled out: Race component, EquipmentRace, VisualTemplate, CharacterVisualResourceID, AnimationSetResourceID; no CameraOffset field exists. The focus follows the creation-data race, which must stay untouched for respec to keep the original traits.
+[/list]
+
+[size=4][b]1.1.0[/b][/size] - 2026-11-22
+[list]
+[*][b]New:[/b] second variant [b]Look and identity[/b] - appearance plus the race name and tags, while racial traits stay yours.
+[*][b]Changed:[/b] one spell with two variants instead of two separate spells.
+[*][b]Changed:[/b] the standalone spells from 1.0.1 are replaced by the new entry on load.
+[/list]
+
+[size=4][b]1.0.1[/b][/size] - 2026-11-22
+[list]
+[*][b]Fixed:[/b] Withers' respec no longer grants the borrowed race's racial traits. The respec screen now shows your original race.
+[*][b]Fixed:[/b] characters converted with 1.0.0 are repaired automatically on load.
+[*][b]Changed:[/b] the Race component and the creation-data race are no longer written.
+[/list]
+
+[size=4][b]1.0.0[/b][/size] - 2026-11-20
+[list]
+[*]Initial release.
+[/list]
+
+
+──────────────────────────────────────────────
+③ Description 页 -> "Known limitations" 末尾新增（BBCode）
+──────────────────────────────────────────────
+
+[*][b]Cross-height swaps keep the old zoom focus in the level up screen.[/b] After a short-to-tall reshape (e.g. duergar to drow) zooming in focuses at the original height, so the closest shot frames the chest instead of the head. That focus follows the race stored in the creation data, which has to stay untouched so that respec keeps your original racial traits - a deliberate trade-off. Everything else (world model, character sheet, armour fit, portraits) follows the new body.
+
+
+──────────────────────────────────────────────
+④ 评论区置顶（中文，可直接发）
+──────────────────────────────────────────────
+
+v1.1.1 已更新
+
+【调整】待机动画集现在会跟随新身体（跨体型变换后动作更自然）。
+【调整】逐角色的种族诊断日志改为开关控制（默认关闭），日志更干净。
+
+【已知限制说明】跨身高变换（如矮人 → 卓尔）后，升级页放大时的对焦点仍在原身高，放到最大会停在胸口而不是头部。
+这一项已排查：不是 Race 组件、也不是 EquipmentRace / VisualTemplate / CharacterVisualResourceID / AnimationSetResourceID 的问题，角色模板上也没有 CameraOffset 字段。
+真正的原因是镜头对焦点跟随"创建数据里的种族"，而这个字段必须保持原样——否则洗点就会拿到幻化后种族的特性。**这是为了保住特性而做的取舍**，其他所有界面（世界模型、角色面板、护甲贴合、肖像）都跟随新身体。
+
+如果你在 1.1.0 或更早版本变过形，升级页仍可能显示原种族的护甲贴合或旧身高镜头：用本版本**再施放一次法术**即可，模板字段每次变形都会重写。
+
+功能回顾：
+- 「重塑形象」有两个变体：只换外表 / 连身份一起换（含种族名称与标签）
+- 种族特性、职业、属性、背景、梦境守护者始终不变；洗点仍只发原种族特性
+- PC + BG3 Script Extender，主机不可用
+
+
+=====================================================================
+GitHub — Release v1.1.1 的 Description（Markdown）
+=====================================================================
+
+### Changed
+- The idle animation set (`AnimationSetResourceID`) is now written together with the visual template, so a cross-body-type swap keeps the new body's idle animation.
+- Per-character race diagnostics moved behind a `DEBUG_RACE_STATE` switch (off by default) - cleaner log.
+
+### Documented
+- After a **cross-height** reshape (e.g. duergar to drow) the level up screen still zooms at the original height, so the closest shot frames the chest instead of the head. Ruled out: `Race` component, `EquipmentRace`, `VisualTemplate`, `CharacterVisualResourceID`, `AnimationSetResourceID`; the character template has no `CameraOffset` field. The focus follows the race in the creation data, which must stay untouched so that respec keeps the original traits - a deliberate trade-off.
+
+### Upgrading from an earlier version
+Saves converted before 1.1.0 may still show the original race's armour fit. Cast the spell once more with this version - the template fields are rewritten on every reshape. Creation data (respec traits) is repaired automatically on load.

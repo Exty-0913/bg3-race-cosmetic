@@ -58,9 +58,18 @@ end
 -- why armour kept the old body shape while the body itself was already the new one.
 local TEMPLATE_VISUAL_KEYS = { "EquipmentRace", "CharacterVisualResourceID", "VisualTemplate" }
 
+-- Same idea, but these carry the camera / animation data: without them the level up preview keeps
+-- framing the character at the ORIGINAL race's height, so zooming in on a short-to-tall swap ends up
+-- on the chest instead of the head.
+local TEMPLATE_CAMERA_KEYS = { "CameraOffset", "AnimationSetResourceID" }
+
 -- 30 minutes: plenty of time to sculpt, short enough that a stale cast cannot
 -- hijack a companion who joins much later.
 local OPEN_TIMEOUT_MS = 1800000
+
+-- Prints every race-related data source per player on load. Only needed when diagnosing a save
+-- converted by an older build; leave it off for release.
+local DEBUG_RACE_STATE = false
 
 ---------------------------------------------------------------------------------------------------
 -- logging (SE console + Script Extender\RaceCosmetic.log)
@@ -316,17 +325,46 @@ local function rememberOrigin(casterGuid, entity)
     return text
 end
 
+-- Is this guid a race that appears as somebody's parent (i.e. a base race, not a subrace)?
+local function isBaseRace(text)
+    if text == "" then return false end
+    for _, parent in pairs(RaceData.parent) do
+        if parent == text then return true end
+    end
+    return false
+end
+
 local function repairCreationRace(casterGuid, entity)
     local stats = entity.CharacterCreationStats
     if stats == nil then return false end
 
     local g = guidText(casterGuid)
     local origin = originRace[g]
+
     if origin == nil then
-        -- Character converted by a build that predates the origin file: the template still holds
-        -- the race it was created with, because no build ever wrote that field.
+        -- Character converted by a build that predates the origin file. No build ever wrote the
+        -- template Race field, so it still holds the race the character was created with.
         local templateRace = guidText(readTemplateKey(entity, "Race"))
-        if templateRace == "" or templateRace == guidText(stats.SubRace) then return false end
+        local subrace = guidText(stats.SubRace)
+        log("respec repair check: template=" .. (templateRace == "" and "<none>" or templateRace) ..
+            " creationRace=" .. guidText(stats.Race) ..
+            " creationSubRace=" .. subrace ..
+            " knownSubrace=" .. tostring(RaceData.parent[templateRace] ~= nil))
+
+        if templateRace == "" then
+            log("respec repair: template race unavailable, nothing to recover from")
+            return false
+        end
+
+        if RaceData.parent[templateRace] == nil or isBaseRace(templateRace) then
+            -- Ambiguous: the template holds a base race (or something unknown), so the original
+            -- subrace cannot be derived. Say so instead of guessing; see README for the manual fix.
+            log("respec repair: cannot derive the original subrace from the template. " ..
+                "Add a line to RaceCosmetic_origin.txt (see README) or reload a save from before " ..
+                "the first reshape.")
+            return false
+        end
+
         origin = templateRace
         originRace[g] = origin
         saveOrigin()
@@ -351,7 +389,25 @@ local function repairAllPlayers()
     for _, ref in ipairs(players) do
         local g = guid(ref)
         local entity = Ext.Entity.Get(g)
-        if entity ~= nil then pcall(repairCreationRace, g, entity) end
+        if entity ~= nil then
+            -- Diagnostic: the sources that can disagree on "which race is this".
+            -- raceComp   -> skeleton / armour follow this on some screens
+            -- ccRace     -> what Withers' respec replays (traits)
+            -- template*  -> what the level up preview uses for the armour variant
+            if DEBUG_RACE_STATE then pcall(function()
+                local stats = entity.CharacterCreationStats
+                log("race state for " .. g ..
+                    ": raceComp=" .. guidText(entity.Race and entity.Race.Race) ..
+                    " ccRace=" .. guidText(stats and stats.Race) ..
+                    " ccSubRace=" .. guidText(stats and stats.SubRace) ..
+                    " origin=" .. tostring(originRace[guidText(g)]) ..
+                    " tmplRace=" .. guidText(readTemplateKey(entity, "Race")) ..
+                    " tmplEquipRace=" .. guidText(readTemplateKey(entity, "EquipmentRace")) ..
+                    " tmplVisual=" .. tostring(readTemplateKey(entity, "VisualTemplate")) ..
+                    " tmplVisualRes=" .. tostring(readTemplateKey(entity, "CharacterVisualResourceID")))
+            end) end
+            pcall(repairCreationRace, g, entity)
+        end
     end
 end
 
@@ -492,6 +548,19 @@ local function copyAppearanceData(casterEntity, tempEntity)
         end
     end
     report[#report + 1] = "template[" .. table.concat(tplParts, ",") .. "]"
+
+    -- Camera framing and animation set: without these a short-to-tall swap keeps zooming at the old
+    -- height in the level up preview.
+    local camParts = {}
+    for _, key in ipairs(TEMPLATE_CAMERA_KEYS) do
+        local value = readTemplateKey(tempEntity, key)
+        if value == nil then
+            camParts[#camParts + 1] = key .. "=n/a"
+        else
+            camParts[#camParts + 1] = key .. "=" .. tostring(writeTemplateKey(casterEntity, key, value))
+        end
+    end
+    report[#report + 1] = "camera[" .. table.concat(camParts, ",") .. "]"
 
     -- The visual template decides which model/skeleton the game builds for previews.
     -- Cloned but intentionally not replicated, exactly like Appearance Edit Enhanced.

@@ -52,12 +52,21 @@ To change your look again later, just cast the spell again.
 [*][b]Free party slot required.[/b] If the party is full the reshape is cancelled (the log says so).
 [*][b]Portraits do not refresh automatically.[/b] Use the magic mirror or reload the save.
 [*][b]The game logs a "dream visitor died" combat log line[/b] while the temporary character is cleaned up. It is engine-side and cannot be suppressed (Appearance Edit Enhanced shows the same). Harmless.
+[*][b]Cross-height swaps keep the old zoom focus in the level up screen.[/b] After a short-to-tall reshape (e.g. duergar to drow) zooming in focuses at the old height, so the closest shot frames the chest instead of the head. That focus follows the race stored in the creation data, which has to stay untouched for respec to keep the original traits - a deliberate trade-off. Everything else follows the new body.
 [*][b]No revert spell by design.[/b] The change is permanent - reshape again to pick a new look.
 [*][b]Do not use it together with Appearance Edit Enhanced's mirror entry.[/b] Both open character creation; pick one.
 [/list]
 
 [size=5][b]Save game compatibility[/b][/size]
 Earlier builds (before 1.0.1) wrote the picked race into the character's creation data, which made Withers' respec hand out the borrowed race's traits. That is fixed by no longer writing those fields. If a character was converted with an older build, load the save once with this version: the creation data is repaired automatically on load, and the next respec grants the correct (original) traits again.
+
+If a character was converted by an earlier build, load the save once with this version and watch the log for [i]creation race repaired[/i]. Do [b]not[/b] re-cast the spell before that repair has run: on such a save the character data already reports the borrowed race, so a reshape performed first would record that borrowed race as the "original" one.
+
+Older builds also left a cosmetic leftover: the [b]level up page can wear the original race's armour[/b] while the head is the new one. Armour fit comes from template fields that only newer builds write - just cast the spell once more with this version and everything matches again.
+
+If the log says [i]cannot derive the original subrace from the template[/i], add one line to [code]RaceCosmetic_origin.txt[/code] in the Script Extender folder:
+[code]<character guid>|<original subrace guid>[/code]
+then load the save again and respec once.
 
 [size=5][b]Shout outs[/b][/size]
 The approach is inspired by [b]Appearance Edit Enhanced[/b] by [b]Eralyne[/b] ([url=https://www.nexusmods.com/baldursgate3/mods/899]link[/url]) - specifically how the game caches the applied look in AppearanceOverride, and how template fields such as EquipmentRace pick armour variants.
