@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contentList>
-  <content contentuid="h1c5d3e8age4b2g49f7ga8d1g6e3b9c2f7d04" version="1">Reshape Form</content>
-  <content contentuid="h7b2d9f46gc8e1g4a3bg9f52g1d8c6e4a7b93" version="1">Reshape your form: borrow another race's appearance and voice. Only how you look and sound changes - your race name, tags and racial traits stay your own.</content>
+  <content contentuid="h9e2b47c1gd3a8g4f56g9b02g6c8e1d4a7f39" version="1">Reshape Form</content>
+  <content contentuid="h3c7d9e21ga5f4g40b8g8e61g9d2a7c5b3f14" version="1">Pick a variant: change the look only, or the race name and tags as well. Racial traits, class and the Dream Guardian never change.</content>
+  <content contentuid="h1c5d3e8age4b2g49f7ga8d1g6e3b9c2f7d04" version="1">Look only</content>
+  <content contentuid="h7b2d9f46gc8e1g4a3bg9f52g1d8c6e4a7b93" version="1">Appearance, body type and voice only. Your race name, tags and racial traits stay your own.</content>
+  <content contentuid="h4b7f2c19ge8a3g4d61g9b52g7c3e1a8d5f42" version="1">Look and identity</content>
+  <content contentuid="h6d1a9e37gc4f8g42b9g8e73g5a2c7b9d1e64" version="1">Appearance, race name and tags all change. Racial traits, class and the Dream Guardian stay your own.</content>
 </contentList>

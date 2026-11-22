@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <contentList>
-  <content contentuid="h1c5d3e8age4b2g49f7ga8d1g6e3b9c2f7d04" version="1">重塑形象</content>
-  <content contentuid="h7b2d9f46gc8e1g4a3bg9f52g1d8c6e4a7b93" version="1">重塑你的形象：可借用其他种族的外貌与声音，但只有外观与声音会改变。你的种族名称、标签与特性仍是你原本的种族。</content>
+  <content contentuid="h9e2b47c1gd3a8g4f56g9b02g6c8e1d4a7f39" version="1">重塑形象</content>
+  <content contentuid="h3c7d9e21ga5f4g40b8g8e61g9d2a7c5b3f14" version="1">选择一个变体：只换外表，或连种族名称与标签一起换。种族特性、职业与梦境守护者始终保持不变。</content>
+  <content contentuid="h1c5d3e8age4b2g49f7ga8d1g6e3b9c2f7d04" version="1">只换外表</content>
+  <content contentuid="h7b2d9f46gc8e1g4a3bg9f52g1d8c6e4a7b93" version="1">只改变外观、体型与声音。你的种族名称、标签与特性仍是你原本的种族。</content>
+  <content contentuid="h4b7f2c19ge8a3g4d61g9b52g7c3e1a8d5f42" version="1">连身份一起换</content>
+  <content contentuid="h6d1a9e37gc4f8g42b9g8e73g5a2c7b9d1e64" version="1">外观、种族名称与标签一起换成新的。种族特性、职业与梦境守护者仍是你原本的。</content>
 </contentList>

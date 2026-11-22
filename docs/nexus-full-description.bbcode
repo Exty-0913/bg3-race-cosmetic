@@ -33,6 +33,7 @@ To change your look again later, just cast the spell again.
 [*][b]Permanent[/b]: the appearance becomes part of your character data, so it survives saving, loading, long rests and respecs.
 [*][b]Consistent everywhere[/b]: world model, level up screen and character sheet all show the same character.
 [*][b]Mechanics preserved[/b]: race name, tags, racial traits, class, subclass, ability scores, background and Dream Guardian.
+[*][b]Respec safe[/b]: Withers' respec still grants your ORIGINAL race's traits, never those of the race you borrowed the look from.
 [*][b]Voice included[/b]: body type and voice are part of the swap.
 [*][b]Any vanilla race[/b], including cross-body-type combinations.
 [*][b]Bilingual[/b]: English and Simplified Chinese.
@@ -54,6 +55,9 @@ To change your look again later, just cast the spell again.
 [*][b]No revert spell by design.[/b] The change is permanent - reshape again to pick a new look.
 [*][b]Do not use it together with Appearance Edit Enhanced's mirror entry.[/b] Both open character creation; pick one.
 [/list]
+
+[size=5][b]Save game compatibility[/b][/size]
+Earlier builds (before 1.0.1) wrote the picked race into the character's creation data, which made Withers' respec hand out the borrowed race's traits. That is fixed by no longer writing those fields. If a character was converted with an older build, load the save once with this version: the creation data is repaired automatically on load, and the next respec grants the correct (original) traits again.
 
 [size=5][b]Shout outs[/b][/size]
 The approach is inspired by [b]Appearance Edit Enhanced[/b] by [b]Eralyne[/b] ([url=https://www.nexusmods.com/baldursgate3/mods/899]link[/url]) - specifically how the game caches the applied look in AppearanceOverride, and how template fields such as EquipmentRace pick armour variants.

@@ -1,0 +1,73 @@
+=====================================================================
+NEXUS: File upload -> "Changelog" field (short version, plain text)
+=====================================================================
+
+1.1.0
+- NEW: second variant "Look and identity" - appearance + race name + tags, while racial traits stay yours.
+- CHANGED: the two spells are now one spellbook entry with two variants (Look only / Look and identity).
+- CHANGED: the standalone spells from 1.0.1 are removed on load and replaced by the new entry, so no duplicate icons.
+- CHANGED: respec repair now uses a recorded original race instead of the live race component.
+- Verified: look-only keeps name/tags/traits; identity changes name+tags and keeps traits; respec still grants the original traits.
+
+
+=====================================================================
+NEXUS: Description tab -> "Changelogs" block (BBCode, running log)
+=====================================================================
+
+[size=5][b]Changelog[/b][/size]
+
+[size=4][b]1.1.0[/b][/size] - 2026-11-22
+[list]
+[*][b]New:[/b] second variant [b]Look and identity[/b] - appearance plus the race name and tags (dialogue options included), while racial traits, class and the Dream Guardian stay yours.
+[*][b]Changed:[/b] the spell is now one entry with two variants (Look only / Look and identity) instead of two separate spells.
+[*][b]Changed:[/b] the standalone spells handed out by 1.0.1 are removed on load, so no duplicate icons are left behind.
+[*][b]Changed:[/b] respec repair now uses a recorded original race instead of the live race component.
+[/list]
+
+[size=4][b]1.0.1[/b][/size] - 2026-11-22
+[list]
+[*][b]Fixed:[/b] Withers' respec no longer grants the borrowed race's racial traits. The respec screen now shows your original race, and the traits you get match it.
+[*][b]Fixed:[/b] characters converted with 1.0.0 are repaired automatically on load - the next respec gives the correct traits.
+[*][b]Changed:[/b] the Race component and the creation-data race are no longer written; the model is carried by the visual template and the appearance data instead.
+[/list]
+
+[size=4][b]1.0.0[/b][/size] - 2026-11-20
+[list]
+[*]Initial release: Reshape Form spell, permanent appearance / body type / voice change, race mechanics untouched.
+[/list]
+
+
+=====================================================================
+NEXUS: Description tab -> text to ADD for 1.1.0
+=====================================================================
+
+(1) Replace the first paragraph of "Description" with:
+
+RaceCosmetic adds the spell [b]Reshape Form[/b] to your main character's spellbook. It has two variants:
+
+[list]
+[*][b]Look only[/b]: appearance, body type and voice. Race name, tags and racial traits stay yours.
+[*][b]Look and identity[/b]: the same, plus the [b]race name and tags[/b] (dialogue options included). Racial traits, class and the Dream Guardian stay yours.
+[/list]
+
+(2) In "Main features", add this bullet:
+
+[*][b]Two variants[/b]: change only the look, or borrow the race name and tags as well.
+
+(3) In "How to use", step 2 becomes:
+
+[*]Cast [b]Reshape Form[/b] outside combat and pick a variant.
+
+
+=====================================================================
+中文版（发在评论区顶楼 / 3DM / NGA / B站动态）
+=====================================================================
+
+v1.1.0 更新日志
+
+【新增】第二个变体「连身份一起换」：外观 + 种族名称 + 种族标签（对话选项也会跟着变），但种族特性、职业与梦境守护者仍是你原本的。
+【调整】两个法术合并为一个技能，点开选择变体：「只换外表」/「连身份一起换」。
+【调整】1.0.1 版直接发放的两个独立法术会在读档时自动移除并换成新技能，不会残留多余图标。
+【调整】洗点自愈改为依据记录的「原始种族」，不再受身份变体影响。
+
+已验证：只换外表时名称/标签/特性不变；连身份一起换时名称与标签更新、特性不变；两种变体之后洗点仍只发原种族特性。

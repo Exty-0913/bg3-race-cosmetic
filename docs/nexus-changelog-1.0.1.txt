@@ -1,0 +1,58 @@
+=====================================================================
+NEXUS: File upload -> "Changelog" field (short version, plain text)
+=====================================================================
+
+1.0.1
+- FIXED: Withers' respec no longer grants the borrowed race's racial traits. The respec screen now shows your original race.
+- FIXED: characters converted with 1.0.0 are repaired automatically on load (the next respec gives the correct traits).
+- CHANGED: the Race component and the creation-data race are no longer written; the model is carried by the visual template and appearance data instead.
+- ADDED: tools/gen-race-data.py to regenerate the race table from game data.
+- Verified: appearance, level up screen, character sheet, armour fit, voice, race name/tags/traits, repeated reshapes.
+
+
+=====================================================================
+NEXUS: Description tab -> "Changelogs" block (BBCode, running log)
+=====================================================================
+
+[size=5][b]Changelog[/b][/size]
+
+[size=4][b]1.0.1[/b][/size] - 2026-11-22
+[list]
+[*][b]Fixed:[/b] Withers' respec no longer grants the borrowed race's racial traits. The respec screen now shows your original race, and the traits you get match it.
+[*][b]Fixed:[/b] characters converted with 1.0.0 are repaired automatically on load - the next respec gives the correct traits.
+[*][b]Changed:[/b] the Race component and the creation-data race are no longer written; the model is carried by the visual template and the appearance data instead. Everything else looks the same.
+[*][b]Added:[/b] tools/gen-race-data.py, regenerates the race table from the game data.
+[/list]
+
+[size=4][b]1.0.0[/b][/size] - 2026-11-20
+[list]
+[*]Initial release: Reshape Form spell, permanent appearance / body type / voice change, race mechanics untouched.
+[/list]
+
+
+=====================================================================
+NEXUS: Description tab -> text to ADD for 1.0.1
+=====================================================================
+
+(1) In "Main features", add this bullet after "Mechanics preserved":
+
+[*][b]Respec safe[/b]: Withers' respec still grants your ORIGINAL race's traits, never those of the race you borrowed the look from.
+
+(2) After "Known limitations", add this block:
+
+[size=5][b]Save game compatibility[/b][/size]
+Builds before 1.0.1 wrote the picked race into the character's creation data, which made Withers' respec hand out the borrowed race's traits. That is fixed by no longer writing those fields. If a character was converted with an older build, load the save once with this version: the creation data is repaired automatically on load, and the next respec grants the correct (original) traits again.
+
+
+=====================================================================
+中文版（发在评论区顶楼 / 3DM / NGA / B站动态）
+=====================================================================
+
+v1.0.1 更新日志
+
+【修复】洗点后种族特性变成「借来那个种族」的问题。现在洗点界面显示的是你原本的种族，洗出来的特性也与之匹配。
+【修复】用 1.0.0 变过形的角色，读取存档时会自动修正数据，再洗一次点即可拿到正确特性。
+【调整】不再写入 Race 组件和创建数据里的种族字段，模型改由视觉模板与外观数据承载 —— 外观表现与之前完全一致。
+【新增】tools/gen-race-data.py，可从游戏数据重新生成种族对照表。
+
+已验证：外观、体型、声音、升级页、角色面板、护甲贴合、种族名称/标签/特性、连续多次变形均正常。

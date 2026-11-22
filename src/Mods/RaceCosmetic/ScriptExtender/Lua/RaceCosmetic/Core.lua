@@ -7,8 +7,18 @@
 -- passives, class, background and the Dream Guardian stay untouched.
 --
 
-local SPELL_BOX  = "RC_Shout_Reshape"
-local SPELL_OPEN = "RC_Shout_Reshape"
+local SPELL_BOX      = "RC_Spell_Form"       -- the container the player is granted
+local SPELL_OPEN     = "RC_Shout_Reshape"    -- variant: appearance / body / voice only
+local SPELL_IDENTITY = "RC_Shout_Identity"   -- variant: the same, plus the race name and tags
+
+-- Everything that has to exist in the stat database for the spell to work.
+local SPELL_ENTRIES = { SPELL_BOX, SPELL_OPEN, SPELL_IDENTITY }
+
+-- Spells granted to the player: the container only - its variants show up as sub-entries.
+local GRANTED_SPELLS = { SPELL_BOX }
+
+-- Handed out by older builds as standalone spells; removed so no duplicate icons are left.
+local STALE_SPELLS = { "RC_Spell_Container", SPELL_OPEN, SPELL_IDENTITY }
 
 -- Tested: swapping the race inside the shapeshift also changes the race name and the
 -- tags shown on the character, and on its own it does NOT fix the level up preview.
@@ -128,12 +138,16 @@ end
 ---------------------------------------------------------------------------------------------------
 
 local function statsCheck()
-    local ok, entry = pcall(function() return Ext.Stats.Get(SPELL_BOX) end)
-    if ok and entry ~= nil then
-        log("stats OK: " .. SPELL_BOX .. " exists")
+    local missing = {}
+    for _, spell in ipairs(SPELL_ENTRIES) do
+        local ok, entry = pcall(function() return Ext.Stats.Get(spell) end)
+        if not (ok and entry ~= nil) then missing[#missing + 1] = spell end
+    end
+    if #missing == 0 then
+        log("stats OK: " .. table.concat(SPELL_ENTRIES, ", ") .. " exist")
         return true
     end
-    log("stats MISSING: " .. SPELL_BOX .. " was not found in the stat database")
+    log("stats MISSING: " .. table.concat(missing, ", ") .. " not found in the stat database")
     return false
 end
 
@@ -173,16 +187,22 @@ local function grantTo(ref)
     local g = guid(ref)
     if g == "" then return false end
 
-    -- Older builds handed out a container spell with two variants; drop it so no
-    -- orphan icon is left behind.
-    pcall(Osi.RemoveSpell, g, "RC_Spell_Container")
+    -- Drop what earlier builds handed out directly, so the container is the only entry left.
+    for _, spell in ipairs(STALE_SPELLS) do
+        pcall(Osi.RemoveSpell, g, spell)
+    end
 
-    local okHas, has = pcall(Osi.HasSpell, g, SPELL_BOX)
-    if okHas and has == 1 then return false end
-
-    local okAdd = pcall(Osi.AddSpell, g, SPELL_BOX, 1, 1)
-    if okAdd then log("spell granted to " .. g) end
-    return okAdd
+    local added = false
+    for _, spell in ipairs(GRANTED_SPELLS) do
+        local okHas, has = pcall(Osi.HasSpell, g, spell)
+        if not (okHas and has == 1) then
+            if pcall(Osi.AddSpell, g, spell, 1, 1) then
+                log("spell granted to " .. g .. ": " .. spell)
+                added = true
+            end
+        end
+    end
+    return added
 end
 
 local grantAttempts = 0
@@ -247,30 +267,81 @@ local function copyVoice(srcEntity, dstEntity)
     return writeVoice(dstEntity, value)
 end
 
--- Old builds wrote the picked race into CharacterCreationStats, which is what Withers' respec
--- reads when it replays racial progression. Since that field is no longer written, characters
--- converted by an older build are put back in sync here: the runtime Race component is the truth.
+-- Characters whose race the mod has already touched: guid -> the race GUID the character had
+-- BEFORE the first reshape. Older builds wrote the picked race into CharacterCreationStats, which
+-- is what Withers' respec replays, so the creation data is put back to this value on load.
+local ORIGIN_FILE = "RaceCosmetic_origin.txt"
+local originRace = {}
+
 local function guidText(value)
     if value == nil then return "" end
     return (tostring(value):gsub("[{}]", ""):lower())
 end
 
-local function repairCreationRace(entity)
+local function loadOrigin()
+    pcall(function()
+        local text = Ext.IO.LoadFile(ORIGIN_FILE)
+        if type(text) ~= "string" then return end
+        for g, race in text:gmatch("([%w%-]+)|([%w%-]+)") do
+            originRace[g:lower()] = race:lower()
+        end
+    end)
+end
+
+local function saveOrigin()
+    local parts = {}
+    for g, race in pairs(originRace) do
+        parts[#parts + 1] = g .. "|" .. race
+    end
+    pcall(function() Ext.IO.SaveFile(ORIGIN_FILE, table.concat(parts, "\n")) end)
+end
+
+-- Called before a reshape writes anything: the Race component still holds the original race.
+-- Records it once and never again, so later reshapes (and identity swaps) cannot overwrite it.
+local function rememberOrigin(casterGuid, entity)
+    local g = casterGuid:lower()
+    if originRace[g] ~= nil then return originRace[g] end
+
+    local race
+    pcall(function() race = entity.Race and entity.Race.Race end)
+    local text = guidText(race)
+    if text == "" then
+        pcall(function() text = guidText(readTemplateKey(entity, "Race")) end)
+    end
+    if text == "" then return nil end
+
+    originRace[g] = text
+    saveOrigin()
+    log("original race recorded for " .. casterGuid .. ": " .. text)
+    return text
+end
+
+local function repairCreationRace(casterGuid, entity)
     local stats = entity.CharacterCreationStats
-    local raceComponent = entity.Race
-    if stats == nil or raceComponent == nil then return false end
+    if stats == nil then return false end
 
-    local runtime = guidText(raceComponent.Race)
-    if runtime == "" then return false end
-    if guidText(stats.SubRace) == runtime then return false end
+    local g = guidText(casterGuid)
+    local origin = originRace[g]
+    if origin == nil then
+        -- Character converted by a build that predates the origin file: the template still holds
+        -- the race it was created with, because no build ever wrote that field.
+        local templateRace = guidText(readTemplateKey(entity, "Race"))
+        if templateRace == "" or templateRace == guidText(stats.SubRace) then return false end
+        origin = templateRace
+        originRace[g] = origin
+        saveOrigin()
+        log("original race recovered from template for " .. casterGuid .. ": " .. origin)
+    end
 
-    local parent = RaceData.parent[runtime]
+    if guidText(stats.SubRace) == origin then return false end
+
+    local parent = RaceData.parent[origin]
     local ok = pcall(function()
-        stats.SubRace = raceComponent.Race
+        stats.SubRace = origin
         if parent ~= nil then stats.Race = parent end
         entity:Replicate("CharacterCreationStats")
     end)
-    log("creation race repaired to " .. runtime ..
+    log("creation race repaired to " .. origin ..
         " (parent=" .. tostring(parent) .. ") ok=" .. tostring(ok))
     return ok
 end
@@ -278,8 +349,9 @@ end
 local function repairAllPlayers()
     local players = collectPlayers()
     for _, ref in ipairs(players) do
-        local entity = Ext.Entity.Get(guid(ref))
-        if entity ~= nil then pcall(repairCreationRace, entity) end
+        local g = guid(ref)
+        local entity = Ext.Entity.Get(g)
+        if entity ~= nil then pcall(repairCreationRace, g, entity) end
     end
 end
 
@@ -485,6 +557,8 @@ end
 local pendingCaster = nil
 local pendingTemp = nil
 local pendingGen = nil
+-- true when the cast came from "Reshape Identity": the race name and tags are swapped as well.
+local pendingIdentity = false
 local genCounter = 0
 local lastTempGuid = nil
 local cleanupRef = nil
@@ -542,7 +616,8 @@ local function applyCosmetic()
 
     local tagsBefore = tagSet(casterEntity)
 
-    pcall(repairCreationRace, casterEntity)
+    rememberOrigin(casterGuid, casterEntity)
+    pcall(repairCreationRace, casterGuid, casterEntity)
 
     local raceBefore, raceAfter
     pcall(function()
@@ -551,9 +626,15 @@ local function applyCosmetic()
     end)
     log("race before=" .. tostring(raceBefore) .. " picked=" .. tostring(raceAfter))
 
-    local rule = USE_FULL_RACE and RULE_FULL or RULE_SAFE
+    -- Identity mode swaps the Race reference inside the shapeshift, which is what the character
+    -- sheet reads for the race name and the tags. Racial traits do not come from there: they are
+    -- replayed from CharacterCreationStats at creation and at every respec, and that field is
+    -- never written, so the original traits survive.
+    local useIdentity = pendingIdentity
+    local rule = (useIdentity or USE_FULL_RACE) and RULE_FULL or RULE_SAFE
     local okTransform = pcall(Osi.Transform, caster, temp, rule)
-    log("transform ok=" .. tostring(okTransform) .. " fullRace=" .. tostring(USE_FULL_RACE))
+    log("transform ok=" .. tostring(okTransform) .. " rule=" .. (useIdentity and "identity" or "form") ..
+        " fullRace=" .. tostring(USE_FULL_RACE))
 
     log("copy voice ok=" .. tostring(copyVoice(tempEntity, casterEntity)))
 
@@ -566,7 +647,9 @@ local function applyCosmetic()
             tostring(copyComponent(tempEntity, casterEntity, "Race")))
     end
 
-    if tagsBefore then
+    -- In appearance-only mode the original race tags are put back after the swap. In identity mode
+    -- the picked race's tags are wanted, so the old ones are left alone instead.
+    if tagsBefore and not useIdentity then
         local tagsAfter = tagSet(casterEntity) or {}
         local restored = 0
         for tag in pairs(tagsBefore) do
@@ -595,7 +678,7 @@ pcall(function()
     Ext.Osiris.RegisterListener("UsingSpell", 5, "after", function(caster, spell)
         if type(spell) ~= "string" then return end
 
-        if spell ~= SPELL_OPEN then
+        if spell ~= SPELL_OPEN and spell ~= SPELL_IDENTITY then
             -- Self healing: whoever casts any spell gets the menu spell once.
             grantTo(caster)
             return
@@ -610,8 +693,10 @@ pcall(function()
         pendingGen = genCounter
         pendingCaster = caster
         pendingTemp = nil
+        pendingIdentity = (spell == SPELL_IDENTITY)
 
-        log("opening character creation for " .. tostring(caster) .. " (gen " .. pendingGen .. ")")
+        log("opening character creation for " .. tostring(caster) ..
+            " (gen " .. pendingGen .. ", identity=" .. tostring(pendingIdentity) .. ")")
         local ok, err = pcall(Osi.StartCharacterCreation)
         if not ok then
             clearState(nil)
@@ -677,6 +762,7 @@ end)
 pcall(function()
     Ext.Events.SessionLoaded:Subscribe(function()
         log("event: SessionLoaded")
+        loadOrigin()
         statsCheck()
         grantAttempts = 0
         tryGrant()
@@ -697,6 +783,7 @@ end)
 pcall(function()
     Ext.Osiris.RegisterListener("SavegameLoaded", 0, "after", function()
         log("event: SavegameLoaded")
+        loadOrigin()
         grantAttempts = 0
         tryGrant()
         pcall(repairAllPlayers)
