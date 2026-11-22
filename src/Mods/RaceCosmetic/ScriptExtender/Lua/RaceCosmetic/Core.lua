@@ -15,24 +15,33 @@ local SPELL_OPEN = "RC_Shout_Reshape"
 -- The Race component is written directly instead (see COPY_RACE_COMPONENT).
 local USE_FULL_RACE = false
 
--- Permanent conversion mode: write the full visual data set into the character so
--- that both the world model and the preview screens (level up, character sheet) are
--- built from the same, fully replaced data.
+-- Which visual data is written into the character.
 --
--- Half a write is worse than no write: copying the appearance while the Race component
--- still points at the old race produced detached hair and mismatched limbs, because
--- the new head parts could not find their anchors on the old skeleton. All of the
--- pieces below therefore have to succeed together (see copyAppearanceData).
+-- The Race component and the race stored in CharacterCreationStats are deliberately NOT written.
+-- Withers' respec replays the racial progression of the race found in CharacterCreationStats, so
+-- writing the picked race there is what used to make a reshaped character receive the looked
+-- race's traits while keeping the original name and tags. Leaving both alone means every respec
+-- replays the original progression - the model itself is carried by the visual template and the
+-- appearance data, which is enough (verified in game).
+--
+-- Half a write is worse than no write: appearance without the visual template produced detached
+-- hair and mismatched limbs. The pieces below therefore have to succeed together (copyAppearanceData).
 local COPY_APPEARANCE_DATA = true
-local COPY_CREATION_RACE = true
 local COPY_VISUAL_COMPONENT = true
-local COPY_RACE_COMPONENT = true
+local COPY_CREATION_RACE = false
+local COPY_RACE_COMPONENT = false
 
 local RULE_SAFE = "3b8e5c41-9f2d-4a71-b6c3-8d1e4f7a2c95"
 local RULE_FULL = "c1a7f2d9-6b34-4e05-9d8a-3f2b7c51e694"
 local NULL_GUID = "00000000-0000-0000-0000-000000000000"
 
 local LOG_FILE = "RaceCosmetic.log"
+
+-- Vanilla race table generated from the game data (Races.lsx + Progressions.lsx).
+local okRaceData, RaceData = pcall(Ext.Require, "RaceCosmetic/RaceData.lua")
+if not okRaceData or type(RaceData) ~= "table" then
+    RaceData = { parent = {} }
+end
 
 -- Visual fields that live on ServerCharacter.Template instead of on components.
 -- EquipmentRace picks which race/gender variant of an armour mesh is worn, which is
@@ -236,6 +245,42 @@ local function copyVoice(srcEntity, dstEntity)
     local value = readVoice(srcEntity)
     if type(value) ~= "string" or value == "" then return false end
     return writeVoice(dstEntity, value)
+end
+
+-- Old builds wrote the picked race into CharacterCreationStats, which is what Withers' respec
+-- reads when it replays racial progression. Since that field is no longer written, characters
+-- converted by an older build are put back in sync here: the runtime Race component is the truth.
+local function guidText(value)
+    if value == nil then return "" end
+    return (tostring(value):gsub("[{}]", ""):lower())
+end
+
+local function repairCreationRace(entity)
+    local stats = entity.CharacterCreationStats
+    local raceComponent = entity.Race
+    if stats == nil or raceComponent == nil then return false end
+
+    local runtime = guidText(raceComponent.Race)
+    if runtime == "" then return false end
+    if guidText(stats.SubRace) == runtime then return false end
+
+    local parent = RaceData.parent[runtime]
+    local ok = pcall(function()
+        stats.SubRace = raceComponent.Race
+        if parent ~= nil then stats.Race = parent end
+        entity:Replicate("CharacterCreationStats")
+    end)
+    log("creation race repaired to " .. runtime ..
+        " (parent=" .. tostring(parent) .. ") ok=" .. tostring(ok))
+    return ok
+end
+
+local function repairAllPlayers()
+    local players = collectPlayers()
+    for _, ref in ipairs(players) do
+        local entity = Ext.Entity.Get(guid(ref))
+        if entity ~= nil then pcall(repairCreationRace, entity) end
+    end
 end
 
 ---------------------------------------------------------------------------------------------------
@@ -497,6 +542,8 @@ local function applyCosmetic()
 
     local tagsBefore = tagSet(casterEntity)
 
+    pcall(repairCreationRace, casterEntity)
+
     local raceBefore, raceAfter
     pcall(function()
         raceBefore = casterEntity.CharacterCreationStats and casterEntity.CharacterCreationStats.Race
@@ -633,6 +680,7 @@ pcall(function()
         statsCheck()
         grantAttempts = 0
         tryGrant()
+        pcall(repairAllPlayers)
     end)
 end)
 
@@ -641,6 +689,7 @@ pcall(function()
         if e.ToState == "Running" then
             grantAttempts = 0
             tryGrant()
+            pcall(repairAllPlayers)
         end
     end)
 end)
@@ -650,6 +699,7 @@ pcall(function()
         log("event: SavegameLoaded")
         grantAttempts = 0
         tryGrant()
+        pcall(repairAllPlayers)
     end)
 end)
 
